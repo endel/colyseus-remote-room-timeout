@@ -1,6 +1,6 @@
 # reproducing [colyseus#174](https://github.com/gamestdio/colyseus/issues/174)
 
-To run this locally, make sure you have `redis-server` running locally.
+To run this locally, make sure you have `redis-server` running.
 
 ```
 npm install
