@@ -1,0 +1,21 @@
+{
+  "name": "colyseus-remote-room-timeout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run bundle-js-client && pm2 start -i 4 server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle-js-client": "browserify ./node_modules/colyseus.js/lib/index.js -s Colyseus -o static/colyseus.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colyseus": "0.9.14",
+    "colyseus.js": "^0.9.14"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.2",
+    "pm2": "^3.1.2"
+  }
+}

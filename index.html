@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+      body { font-family: Tahoma, Geneva, sans-serif; }
+    </style>
+    <script src="static/colyseus.js"></script>
+  </head>
+  <body>
+    <h1>Colyseus: Remote Room Timeout Issue</h1>
+    <p>This example demonstrates the <a href="https://github.com/gamestdio/colyseus/issues/174">issue #174</a>.</p>
+    <p>Colyseus version here is <strong>0.9.14</strong>, which is the version before applying an attempt to workaround the issue.</p>
+    <p>Colyseus version <strong>0.9.16-alpha.2</strong> is supposed to have fixed this.</p>
+    <ul>
+      <li>DummyRoom.js has an async onAuth() of 200ms, and async onLeave() of 200ms.</li>
+      <li>To reproduce the issue, you must use multiple Colyseus processes</li>
+    </ul>
+
+    <h2>Logs</h2>
+    <div id="logs"></div>
+
+    <script>
+      var host = (window.document.location.host || "localhost").replace(/:.*/, '');
+      var client = new Colyseus.Client('ws://' + host + ':2657');
+      var room;
+
+      var logs = document.getElementById('logs');
+
+      client.onOpen.add(function() {
+          logs.innerHTML += 'onOpen <br/>';
+          console.log("onOpen")
+
+          join().onJoin.add(() => {
+            leave();
+            join();
+          });
+      });
+
+      function addRoomListeners (room) {
+          room.onJoin.add(function() {
+              logs.innerHTML += 'JOINED "' + room.id + '"<br />';
+              console.log('JOINED', room.id);
+          });
+
+          room.onError.add(function(err) {
+            logs.innerHTML += '<strong>Remote room timed out</strong><br/>';
+          });
+
+          room.onLeave.add(function() {
+              logs.innerHTML += 'LEFT "' + room.id + '"<br />';
+              console.log('LEFT', room.id);
+          });
+      }
+
+      function join () {
+          room = client.join('dummy_room');
+          addRoomListeners(room);
+          return room;
+      }
+
+      function leave () {
+          room.leave();
+      }
+
+    </script>
+
+  </body>
+</html>
